@@ -1,0 +1,167 @@
+Actual generado:  https://k7jlymv9xg.execute-api.us-east-1.amazonaws.com/develop/publico/login
+
+
+NOTAS GENERALES: 
+
+1. con el JWT Cognito, sacamos el CognitoSub para sacar el Super Usuario (Admin), Administrar N Contratos.
+
+
+-- Pasos:
+
+https://k7jlymv9xg.execute-api.us-east-1.amazonaws.com/develop/configura/v1/admin/company/person/activate? (enviar el correo de activación).
+	0. Header JWT, ip, geo, canal.
+	1. Objeto [{}]: Ingreso el email, ID Origen, ID Contrato, ID Participante, Nombre del participante, Por defecto Estatus = 1.
+	2. Genero el código de activación, vigencia (7 días - crear configuración para cambiar tiempo).
+	3. CREATE/UPDATE: RK_PAI_USUARIO_DEV | RK_PAI_USUARIO_CONTRATO_DEV | RK_PAI_USUARIO_PERFIL_DEV (PARTICIPANTE)
+	4. Enviar datos al correo del usuario.
+	5. Respuesta: 200OK
+
+----
+
+https://k7jlymv9xg.execute-api.us-east-1.amazonaws.com/develop/publico/v1/register (validate)
+	1. NO JWT.
+	2. Header (appversion, ip, geo, osversion, ostype (andr/ios), canal (web/movil), phonemodel).
+	3. Datos del dispositivo (Body): Email, Código de x|activación.
+	4. SELECT: RK_PAI_USUARIO_DEV (Email, Codigo, Vigencia, Estatus = 1).
+	5. Respuesta: 
+		200OK - Continua con el registro, 
+		400BadRequest - Verifique la vigencia del código de activación, Verifique usuario registrado (existe). 
+
+---
+	
+https://k7jlymv9xg.execute-api.us-east-1.amazonaws.com/develop/publico/v1/register/submit (escribe en la tabla usuario_contrato)
+	1. NO JWT.
+	2. Header (appversion, ip, geo, osversion, ostype (andr/ios), canal (web/movil), phonemodel).
+	3. Datos del dispositivo (Body): Email, Código de activación, password, confirmación de password.
+	4. UPDATE: RK_PAI_USUARIO_DEV (Estatus = 2).
+	5. Crear registro en cognito (email, password).
+	5. Respuesta: 200OK.
+
+---
+
+-- Después del Registro
+https://k7jlymv9xg.execute-api.us-east-1.amazonaws.com/develop/publico/v1/login
+	1. NO JWT.
+	2. Header (appversion, ip, geo, osversion, ostype (andr/ios), canal (web/movil), phonemodel).
+	3. JSON {
+    		"email": "carlosalberto.mesarivillas@gmail.com",
+    		"password": "testVector2025#"
+		}
+	4. Respuesta:
+		{
+			"accesstoken": "eyJraWQiOiJvQlFEKzl5K3EyOFJ4UXJaaVhVcUp4dG5kZ2FwVGQ3NnhtMlU0NVZ5eit3PSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJjNGY4MjRmOC1mMDQxLTcwODEtY2VjOS1hNjQ1N2ExZjVhNTQiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tXC91cy1lYXN0LTFfdVlEem53dG5QIiwiY29nbml0bzp1c2VybmFtZSI6ImM0ZjgyNGY4LWYwNDEtNzA4MS1jZWM5LWE2NDU3YTFmNWE1NCIsIm9yaWdpbl9qdGkiOiJiMThlNTJhYS05NzFlLTRiODktYjMxOS03MzlmM2VjMjgxYjAiLCJhdWQiOiIyZTJ1YnR2cGQyN3Y5cjB2bHV0ZjFnNDUzNCIsImV2ZW50X2lkIjoiNGE4YzNiZjUtMWZhNS00MGI5LTgzZWQtYTg2NDU2M2FlZjRhIiwidG9rZW5fdXNlIjoiaWQiLCJhdXRoX3RpbWUiOjE3NDk4MzMzODEsIm5pY2tuYW1lIjoiY2FybG9zbWVzYSIsImV4cCI6MTc0OTgzNjk4MSwiaWF0IjoxNzQ5ODMzMzgxLCJqdGkiOiJlMDU0NzFiMC00ZTZjLTQ2NjUtYjk3NS0wMmFmNDgzMGZhOWEiLCJlbWFpbCI6ImNhcmxvc2FsYmVydG8ubWVzYXJpdmlsbGFzQGdtYWlsLmNvbSJ9.bEOdtRurhIPb7Gf7IIEtAfh3HX8or7Jyh3ZMpjfTTYABPesfbvoLAfe4GRgGapytpX8I1fSzx0CeOcWs5JqUuVZ_5wuTbBfW9bI_69zJkSdPO26Us7sfDVtNiK9e-1b0t9aKPEf8fVJrGm-pjpvsDIsOwp0S4-no9UEgixVoLnRzlw4A-VD-kefarPmLBspAfq0XfaZFgU2GT6wrjpVPBNxp58g5rJQuQqV4PvG-ysU2WdnEdleHe6dVljddGO3O8yL45DRkZNrStRk_gE4nG_IkCg8rdZIx2x8YqpmY3lj4TohNePpR6-Jaem0aEE8TyK3yLhxf9z0QsDt4-rS3wQ",
+			"perfil": {nombre, correo, celular, foto},
+			tdsEmpresas [
+{    
+  idEmpresa
+  Nombre
+  Monto
+  tdsServicios: [prestamos,retiro],
+  brandings: [{logo, nombre, color}]	
+},
+{    
+  idEmpresa
+  Nombre
+  Monto
+  tdsServicios: [prestamos],
+  brandings: [{logo, nombre, color}]	
+},
+{    
+  idEmpresa
+  Nombre
+  Monto
+  tdsServicios: [],
+  brandings: [{logo, nombre, color}]	
+}			
+		} 
+
+
+--------------------------------------------------------------------------------------
+-------- Validaciones Generales (Nota: Esta lambda se ejecuta despues del login) -----
+
+
+---- AWS LAMBDAS INICIO ----
+- AWS LAMBDA registrar en Cognito (email, contraseña).
+- AWS LAMBDA loguear usuario en Cognito (email, contraseña) -> Token JWT.
+- AWS LAMBDA enviar correo electrónico con el código de activación.
+
+---- AWS LAMBDAS EN IMPLEMENTACION Y PRUEBAS ----
+- AWS LAMBDA registrar usuario (datos complementarios).
+- AWS LAMBDA valida que no exista bloqueo de acceso a nivel global (dynamodb.RK_PAI_CONF_PARAMETROS_DEV) - Incluir en todos los servicios.
+- AWS LAMBDA verficar version vigente app android/ios (dynamodb.RK_PAI_CONF_PARAMETROS_DEV).
+- Response: { "permissions": true, "message": "La plataforma se encuentra por fuera de Linea." }
+
+
+-------------------------------------
+-------- Consulta de Saldo ----------
+
+https://k7jlymv9xg.execute-api.us-east-1.amazonaws.com/develop/consulta/v1/enduser/balance/idEmpresa
+	1. AWS LAMBDA recibe por headers: JWT;
+	2. Header (appversion, ip, geo, osversion, ostype (andr/ios), canal (web/movil), phonemodel, Authorization Bearer ........., ApiKey).
+	3. JSON {
+    		"email": "carlosalberto.mesarivillas@gmail.com",
+    		"password": "testVector2025#"
+		}
+	4. Logica de negocio:
+		- Extraer el CognitoSub con base en el token
+		- Validar dentro de la tabla de usuarios el CognitoSub.
+		- AWS LAMBDA valida que exista esa relacion (dynamo.RK_PAI_USUARIO_EMPRESA_DEV).
+		- AWS LAMBDA valida que la empresa se encuentra Activa, no exista bloqueo de acceso a nivel empresa a consultar (dynam.RK_PAI_CONF_EMPRESA_PARAMETROS_DEV)
+		- AWS LAMBDA que el usuario tenga acceso al servicio (dynamo.RK_PAI_CONF_PERFIL_SERVICIO_DEV / SERVICE_ID (Environment Lambda))
+		- AWS LAMBDA finnaly se genera bitacora de acceso: elemento, usuario, fecha, hora, tiempo ejecucion, headers... (dynamo.BITACORAAPP)
+		- Entregamos la informacion que esta alojada en (DYBAMODB.RK_PAI_PARTICIPANTE_DATA_DEV)
+			- RK_PAI_USUARIO_EMPRESA_DEV.IDPARTICIPANTE = RK_PAI_PARTICIPANTE_DATA_DEV.IDPARTICIPANTE
+			- Extraer información de DYBAMODB.RK_PAI_PARTICIPANTE_DATA_DEV
+	5. Respuesta:
+		- {ierror: 12345, cerror: "error descripción", data: [{...}, {...}, {...}, {...}]}
+		- {ierror: 0, cerror: "success descripción", data: [{...}, {...}, {...}, {...}]}
+		
+
+---------------------------------
+-------- NORMALIZACION ----------
+
+Respuesta para todos los servicios:
+		- {ierror: 12345, cerror: "error descripción", data: [{...}, {...}, {...}, {...}]}
+		- {ierror: 0, cerror: "success descripción", data: [{...}, {...}, {...}, {...}]}
+		
+		Login:
+		- {ierror: 0, cerror: "success descripción", data: {"accesstoken": "eyJraWQiOiJvQlFEKzl5K3EyOFJ4UXJaaVhVcUp4dG5kZ2FwVGQ3NnhtMlU0NVZ5eit3PSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiJjNGY4MjRmOC1mMDQxLTcwODEtY2VjOS1hNjQ1N2ExZjVhNTQiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLnVzLWVhc3QtMS5hbWF6b25hd3MuY29tXC91cy1lYXN0LTFfdVlEem53dG5QIiwiY29nbml0bzp1c2VybmFtZSI6ImM0ZjgyNGY4LWYwNDEtNzA4MS1jZWM5LWE2NDU3YTFmNWE1NCIsIm9yaWdpbl9qdGkiOiJiMThlNTJhYS05NzFlLTRiODktYjMxOS03MzlmM2VjMjgxYjAiLCJhdWQiOiIyZTJ1YnR2cGQyN3Y5cjB2bHV0ZjFnNDUzNCIsImV2ZW50X2lkIjoiNGE4YzNiZjUtMWZhNS00MGI5LTgzZWQtYTg2NDU2M2FlZjRhIiwidG9rZW5fdXNlIjoiaWQiLCJhdXRoX3RpbWUiOjE3NDk4MzMzODEsIm5pY2tuYW1lIjoiY2FybG9zbWVzYSIsImV4cCI6MTc0OTgzNjk4MSwiaWF0IjoxNzQ5ODMzMzgxLCJqdGkiOiJlMDU0NzFiMC00ZTZjLTQ2NjUtYjk3NS0wMmFmNDgzMGZhOWEiLCJlbWFpbCI6ImNhcmxvc2FsYmVydG8ubWVzYXJpdmlsbGFzQGdtYWlsLmNvbSJ9.bEOdtRurhIPb7Gf7IIEtAfh3HX8or7Jyh3ZMpjfTTYABPesfbvoLAfe4GRgGapytpX8I1fSzx0CeOcWs5JqUuVZ_5wuTbBfW9bI_69zJkSdPO26Us7sfDVtNiK9e-1b0t9aKPEf8fVJrGm-pjpvsDIsOwp0S4-no9UEgixVoLnRzlw4A-VD-kefarPmLBspAfq0XfaZFgU2GT6wrjpVPBNxp58g5rJQuQqV4PvG-ysU2WdnEdleHe6dVljddGO3O8yL45DRkZNrStRk_gE4nG_IkCg8rdZIx2x8YqpmY3lj4TohNePpR6-Jaem0aEE8TyK3yLhxf9z0QsDt4-rS3wQ",
+			"perfil": {nombre, correo, celular, foto},
+			tdsEmpresas [
+{    
+  idEmpresa
+  Nombre
+  Monto
+  tdsServicios: [prestamos,retiro],
+  brandings: [{logo, nombre, color}]	
+},
+{    
+  idEmpresa
+  Nombre
+  Monto
+  tdsServicios: [prestamos],
+  brandings: [{logo, nombre, color}]	
+},
+{    
+  idEmpresa
+  Nombre
+  Monto
+  tdsServicios: [],
+  brandings: [{logo, nombre, color}]	
+}			
+		}}}
+
+
+--- Devolver los datos del resumen de un participante
+
+--- Login (email, password).
+--- Operaciones (enviar correo electrónico, solicitando codigo de autho. (8 digitos)) --> DynamoDB (mark: operation, duration: ).
+--- Envio de la operación:
+------ Validar en el header (code: XXXX) -> Validamos en DynamoDB (mark: operation, email).
+
+
+
+
+
+PUBLICO	/api/v1/register?type=admin
+PUBLICO	/api/v1/register/submit?type=admin

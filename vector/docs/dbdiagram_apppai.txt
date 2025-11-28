@@ -1,0 +1,99 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table RK_PAI_USUARIO_APP_DEV {
+  email varchar [unique]
+  id_usuario varchar [primary key, note: '']
+  cod_act varchar [not null ,note: '']
+  cod_act_vig timestamp [not null]
+  cognito_sub varchar
+  id_disp varchar   [not null]
+  blk varchar   [not null]
+  id_blk_motivo varint   [not null]
+  id_estatus varint   [not null]  
+  fecha_estatus  timestamp [not null]
+  app_version varchar   [not null]
+}
+
+Table RK_PAI_USUARIO_DISP_DEV {
+  id_disp varchar [primary key,note: 'imei/uudi dispositivo', ref: > RK_PAI_USUARIO_APP_DEV.id_disp]
+  os_type varchar [not null]
+  os_version  varchar [not null]
+  os_model varchar [not null]
+  id_estatus varint   [not null]  
+  fecha_estatus timestamp [not null]  
+}
+
+Table RK_PAI_USUARIO_PERFIL_DEV {
+  id_usuario varchar [primary key,note: '',ref: > RK_PAI_USUARIO_APP_DEV.id_usuario]
+  id_perfil varint [note: '']
+}
+
+Table RK_PAI_USUARIO_CONTRATO_DEV {
+  id_usuario varchar [primary key,note: '',ref: > RK_PAI_USUARIO_APP_DEV.id_usuario]
+  id_grupo varint [note: '']
+  
+  id_origen varint [note: '']
+  id_contrato varint [note: '']  
+
+  id_ciclo varint [note: '']
+  id_participante varint [note: '']  
+  
+}
+
+////// CONFIGURACION ///////
+
+
+Table RK_PAI_CONF_GRUPO_CONTRATO_DEV {
+  id_grupo varint   [primary key, unique,not null, ref: > RK_PAI_USUARIO_CONTRATO_DEV.id_grupo]
+  id_origen varint [not null, ref: > RK_PAI_USUARIO_CONTRATO_DEV.id_origen]  
+  id_contrato varint [note: '', ref: > RK_PAI_USUARIO_CONTRATO_DEV.id_contrato]
+  descripcion varchar   [not null]  
+}
+
+
+////// CATALOGOS //////////
+
+Table RK_PAI_CAT_CONTRATO_DEV {  
+  id_origen varint [not null, ref: > RK_PAI_USUARIO_CONTRATO_DEV.id_origen]  
+  id_contrato varint [note: '', ref: > RK_PAI_USUARIO_CONTRATO_DEV.id_contrato]
+  id_empresa varint   [primary key, unique,not null]  
+  descripcion varchar   [not null] 
+}
+
+Table RK_PAI_CAT_CONTRATO_CICLO_DEV {
+  id_origen varint [not null, ref: > RK_PAI_USUARIO_CONTRATO_DEV.id_origen]  
+  id_contrato varint [note: '', ref: > RK_PAI_USUARIO_CONTRATO_DEV.id_contrato]
+  id_ciclo varint   [primary key, unique,not null, ref: > RK_PAI_USUARIO_CONTRATO_DEV.id_ciclo]
+  activo varlog
+  descripcion varchar   [not null]  
+}
+
+Table RK_PAI_CAT_ORIGEN_DEV {
+  id_origen varint   [primary key, unique,not null, ref: > RK_PAI_USUARIO_CONTRATO_DEV.id_origen]
+  descripcion varchar   [not null]  
+}
+
+Table RK_PAI_CAT_GRUPO_DEV {
+  id_grupo varint   [primary key, unique,not null, ref: > RK_PAI_USUARIO_CONTRATO_DEV.id_grupo]
+  descripcion varchar   [not null]  
+}
+
+Table RK_PAI_CAT_BLK_MOTIVO_DEV {
+  id_blk_motivo varint   [primary key, unique,not null, ref: > RK_PAI_USUARIO_APP_DEV.id_blk_motivo]
+  descripcion varchar   [not null]  
+}
+
+Table RK_PAI_CAT_ESTATUS_DEV {
+  id_estatus varint   [primary key, unique,not null, ref: > RK_PAI_USUARIO_APP_DEV.id_estatus]
+  descripcion varchar   [not null]  
+}
+
+Table RK_PAI_CAT_PERFIL_DEV {
+  id_perfil varint   [primary key, unique,not null, ref: > RK_PAI_USUARIO_PERFIL_DEV.id_perfil]
+  descripcion varchar   [not null]  
+}
+
+
+
+

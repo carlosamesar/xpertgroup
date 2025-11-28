@@ -1,0 +1,8 @@
+{
+  "app": "npx ts-node --prefer-ts-exts bin/my-app.ts",
+  "context": {
+    "@aws-cdk/core:stackIdFormat": "long",
+    "@aws-cdk/core:stackName": "MyStack"
+  },
+  "build": "npm --prefix lambda run build && tsc"
+}

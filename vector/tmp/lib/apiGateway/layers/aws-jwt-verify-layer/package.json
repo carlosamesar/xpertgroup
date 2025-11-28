@@ -1,0 +1,12 @@
+{
+  "name": "aws-jwt-verify-layer",
+  "version": "3.0.0",
+  "description": "Layer containing aws-jwt-verify for Lambda JWT token validation",
+  "main": "index.js",
+  "dependencies": {
+    "aws-jwt-verify": "^4.0.1"
+  },
+  "keywords": ["jwt", "cognito", "aws", "lambda", "layer"],
+  "author": "PAI Development Team",
+  "license": "ISC"
+}

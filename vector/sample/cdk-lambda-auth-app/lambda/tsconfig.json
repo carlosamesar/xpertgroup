@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "target": "ES2022", // Updated target
+    "module": "commonjs",
+    "lib": ["ES2022"], // Updated lib, DOM is not needed for Node.js lambda
+    "declaration": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": false,
+    // "inlineSourceMap": true, // Removed as source maps are better handled by bundler if used
+    // "inlineSources": true, // Removed
+    "experimentalDecorators": true,
+    "strictPropertyInitialization": false,
+    "esModuleInterop": true,
+    "outDir": "../dist/lambda", // Adjusted outDir to be relative to project root or a common dist
+    "rootDir": "src",
+    "typeRoots": [
+      "../../node_modules/@types", // Adjusted path to root node_modules
+      "./node_modules/@types" // Keep local as fallback
+    ],
+    "moduleResolution": "node" // Added for better module resolution
+  },
+  "include": [
+    "src/**/*.ts" // Ensure only src is included
+  ],
+  "exclude": [
+    "node_modules",
+    "../../cdk.out" // Adjusted path to root cdk.out
+  ]
+}

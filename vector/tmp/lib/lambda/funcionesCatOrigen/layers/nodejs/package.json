@@ -1,0 +1,21 @@
+{
+  "name": "jwt-verification-layer",
+  "version": "1.0.0",
+  "description": "JWT verification layer for Lambda functions with Cognito integration",
+  "main": "index.js",
+  "dependencies": {
+    "aws-jwt-verify": "^4.0.1"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "aws",
+    "lambda",
+    "jwt",
+    "cognito",
+    "authentication"
+  ],
+  "author": "PAI Development Team",
+  "license": "MIT"
+}
